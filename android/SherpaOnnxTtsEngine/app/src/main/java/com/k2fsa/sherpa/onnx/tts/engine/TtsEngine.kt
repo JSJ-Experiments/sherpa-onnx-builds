@@ -36,6 +36,7 @@ object TtsEngine {
     val silenceScaleState: MutableState<Float> = mutableFloatStateOf(0.2F)
     val noiseScaleState: MutableState<Float> = mutableFloatStateOf(0.667F)
     val noiseScaleWState: MutableState<Float> = mutableFloatStateOf(0.8F)
+    val providerState: MutableState<String> = androidx.compose.runtime.mutableStateOf("cpu")
 
     var speed: Float
         get() = speedState.value
@@ -71,6 +72,12 @@ object TtsEngine {
         get() = noiseScaleWState.value
         set(value) {
             noiseScaleWState.value = value
+        }
+
+    var provider: String
+        get() = providerState.value
+        set(value) {
+            providerState.value = value
         }
 
     private var modelDir: String? = null
@@ -241,6 +248,7 @@ object TtsEngine {
         silenceScale = PreferenceHelper(context).getSilenceScale()
         noiseScale = PreferenceHelper(context).getNoiseScale()
         noiseScaleW = PreferenceHelper(context).getNoiseScaleW()
+        provider = PreferenceHelper(context).getProvider()
 
         val config = getOfflineTtsConfig(
             modelDir = modelDir!!,
@@ -258,6 +266,7 @@ object TtsEngine {
             silenceScale = silenceScale,
             noiseScale = noiseScale,
             noiseScaleW = noiseScaleW,
+            provider = provider,
         )
 
         tts = OfflineTts(assetManager = assets, config = config)

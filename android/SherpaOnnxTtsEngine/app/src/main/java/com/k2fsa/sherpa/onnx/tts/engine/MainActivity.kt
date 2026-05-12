@@ -177,6 +177,22 @@ class MainActivity : ComponentActivity() {
                                         .wrapContentHeight(),
                                 )
 
+                                OutlinedTextField(
+                                    value = TtsEngine.providerState.value,
+                                    onValueChange = {
+                                        TtsEngine.provider = it
+                                        preferenceHelper.setProvider(it)
+                                        TtsEngine.updateTts(this@MainActivity)
+                                    },
+                                    label = {
+                                        Text("Provider (cpu, xnnpack, nnapi, qnn)")
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp)
+                                        .wrapContentHeight(),
+                                )
+
                                 val testTextContent = getSampleText(TtsEngine.lang ?: "")
 
                                 var testText by remember { mutableStateOf(testTextContent) }

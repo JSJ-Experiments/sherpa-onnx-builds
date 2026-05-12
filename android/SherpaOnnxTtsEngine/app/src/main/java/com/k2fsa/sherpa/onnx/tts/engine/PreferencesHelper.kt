@@ -10,6 +10,7 @@ class PreferenceHelper(context: Context) {
     private val SILENCE_SCALE_KEY = "silence_scale"
     private val NOISE_SCALE_KEY = "noise_scale"
     private val NOISE_SCALE_W_KEY = "noise_scale_w"
+    private val PROVIDER_KEY = "provider"
 
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -73,4 +74,14 @@ class PreferenceHelper(context: Context) {
     fun getNoiseScaleW(): Float {
         return sharedPreferences.getFloat(NOISE_SCALE_W_KEY, 0.8f)
     }
+
+    fun setProvider(value: String) {
+        val editor = sharedPreferences.edit()
+        editor.putString(PROVIDER_KEY, value)
+        editor.apply()
     }
+
+    fun getProvider(): String {
+        return sharedPreferences.getString(PROVIDER_KEY, "cpu") ?: "cpu"
+    }
+}

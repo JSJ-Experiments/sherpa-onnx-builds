@@ -286,6 +286,7 @@ fun getOfflineTtsConfig(
     noiseScale: Float? = null,
     noiseScaleW: Float? = null,
     silenceScale: Float? = null,
+    provider: String? = null,
 ): OfflineTtsConfig {
     // For Matcha TTS, please set
     // acousticModelName, vocoder
@@ -380,7 +381,7 @@ fun getOfflineTtsConfig(
             kitten = kitten,
             numThreads = numberOfThreads,
             debug = true,
-            provider = "cpu",
+            provider = provider ?: "cpu",
         ),
         ruleFsts = ruleFsts,
         ruleFars = ruleFars,
