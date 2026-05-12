@@ -2,7 +2,7 @@ name: Build ARMv8 TTS Engine APK
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   workflow_dispatch:
 
 permissions:
