@@ -108,7 +108,7 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 Column {
-                                    Text(\"Silence Scale \" + String.format(\"%.1f\", TtsEngine.silenceScale))
+                                    Text("Silence Scale " + String.format("%.1f", TtsEngine.silenceScale))
                                     Slider(
                                         value = TtsEngine.silenceScaleState.value,
                                         onValueChange = {
@@ -122,7 +122,7 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 Column {
-                                    Text(\"Noise Scale \" + String.format(\"%.2f\", TtsEngine.noiseScale))
+                                    Text("Noise Scale " + String.format("%.2f", TtsEngine.noiseScale))
                                     Slider(
                                         value = TtsEngine.noiseScaleState.value,
                                         onValueChange = {
@@ -136,7 +136,7 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 Column {
-                                    Text(\"Noise Scale W \" + String.format(\"%.2f\", TtsEngine.noiseScaleW))
+                                    Text("Noise Scale W " + String.format("%.2f", TtsEngine.noiseScaleW))
                                     Slider(
                                         value = TtsEngine.noiseScaleWState.value,
                                         onValueChange = {
@@ -163,12 +163,12 @@ class MainActivity : ComponentActivity() {
                                                     TtsEngine.updateTts(this@MainActivity)
                                                 }
                                             } catch (ex: NumberFormatException) {
-                                                Log.i(TAG, \"Invalid input: $it\")
+                                                Log.i(TAG, "Invalid input: $it")
                                             }
                                         }
                                     },
                                     label = {
-                                        Text(\"Number of threads\")
+                                        Text("Number of threads")
                                     },
                                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                     modifier = Modifier
@@ -177,7 +177,7 @@ class MainActivity : ComponentActivity() {
                                         .wrapContentHeight(),
                                 )
 
-                                val testTextContent = getSampleText(TtsEngine.lang ?: \"\")
+                                val testTextContent = getSampleText(TtsEngine.lang ?: "")
 
                                 var testText by remember { mutableStateOf(testTextContent) }
                                 var startEnabled by remember { mutableStateOf(true) }

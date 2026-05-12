@@ -4,12 +4,12 @@ import android.content.SharedPreferences
 class PreferenceHelper(context: Context) {
 
     private val PREFS_NAME = "com.k2fsa.sherpa.onnx.tts.engine"
-    private val SPEED_KEY = \"speed\"
-    private val SID_KEY = \"speaker_id\"
-    private val NUM_THREADS_KEY = \"num_threads\"
-    private val SILENCE_SCALE_KEY = \"silence_scale\"
-    private val NOISE_SCALE_KEY = \"noise_scale\"
-    private val NOISE_SCALE_W_KEY = \"noise_scale_w\"
+    private val SPEED_KEY = "speed"
+    private val SID_KEY = "speaker_id"
+    private val NUM_THREADS_KEY = "num_threads"
+    private val SILENCE_SCALE_KEY = "silence_scale"
+    private val NOISE_SCALE_KEY = "noise_scale"
+    private val NOISE_SCALE_W_KEY = "noise_scale_w"
 
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)

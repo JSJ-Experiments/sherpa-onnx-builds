@@ -100,16 +100,16 @@ object TtsEngine {
         // For Matcha -- end
 
         // For Kokoro -- begin
-        voices = \"voices.bin\"
+        voices = "voices.bin"
         // For Kokoro -- end
 
-        modelDir = \"kokoro-en-v0_19\"
-        modelName = \"model.onnx\"
+        modelDir = "kokoro-en-v0_19"
+        modelName = "model.onnx"
         ruleFsts = null
         ruleFars = null
         lexicon = null
-        dataDir = \"kokoro-en-v0_19/espeak-ng-data\"
-        lang = \"eng\"
+        dataDir = "kokoro-en-v0_19/espeak-ng-data"
+        lang = "eng"
         lang2 = null
 
         // Please enable one and only one of the examples below
@@ -232,7 +232,7 @@ object TtsEngine {
 
         if (dataDir != null) {
             val newDir = copyDataDir(context, dataDir!!)
-            dataDir = \"$newDir/$dataDir\"
+            dataDir = "$newDir/$dataDir"
         }
 
         speed = PreferenceHelper(context).getSpeed()
@@ -244,15 +244,15 @@ object TtsEngine {
 
         val config = getOfflineTtsConfig(
             modelDir = modelDir!!,
-            modelName = modelName ?: \"\",
-            acousticModelName = acousticModelName ?: \"\",
-            vocoder = vocoder ?: \"\",
-            voices = voices ?: \"\",
-            lexicon = lexicon ?: \"\",
-            dataDir = dataDir ?: \"\",
-            dictDir = \"\",
-            ruleFsts = ruleFsts ?: \"\",
-            ruleFars = ruleFars ?: \"\",
+            modelName = modelName ?: "",
+            acousticModelName = acousticModelName ?: "",
+            vocoder = vocoder ?: "",
+            voices = voices ?: "",
+            lexicon = lexicon ?: "",
+            dataDir = dataDir ?: "",
+            dictDir = "",
+            ruleFsts = ruleFsts ?: "",
+            ruleFars = ruleFars ?: "",
             isKitten = isKitten,
             numThreads = numThreads,
             silenceScale = silenceScale,
