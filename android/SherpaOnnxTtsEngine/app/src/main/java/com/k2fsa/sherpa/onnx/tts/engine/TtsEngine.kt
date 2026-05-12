@@ -32,6 +32,8 @@ object TtsEngine {
 
     val speedState: MutableState<Float> = mutableFloatStateOf(1.0F)
     val speakerIdState: MutableState<Int> = mutableIntStateOf(0)
+    val numThreadsState: MutableState<Int> = mutableIntStateOf(8)
+    val silenceScaleState: MutableState<Float> = mutableFloatStateOf(0.2F)
 
     var speed: Float
         get() = speedState.value
@@ -44,6 +46,19 @@ object TtsEngine {
         set(value) {
             speakerIdState.value = value
         }
+
+    var numThreads: Int
+        get() = numThreadsState.value
+        set(value) {
+            numThreadsState.value = value
+        }
+
+    var silenceScale: Float
+        get() = silenceScaleState.value
+        set(value) {
+            silenceScaleState.value = value
+        }
+
 
     private var modelDir: String? = null
     private var modelName: String? = null
@@ -72,15 +87,16 @@ object TtsEngine {
         // For Matcha -- end
 
         // For Kokoro -- begin
-        voices = null
+        voices = "voices.bin"
         // For Kokoro -- end
 
-        modelDir = null
+        modelDir = "kokoro-en-v0_19"
+        modelName = "model.onnx"
         ruleFsts = null
         ruleFars = null
         lexicon = null
-        dataDir = null
-        lang = null
+        dataDir = "kokoro-en-v0_19/espeak-ng-data"
+        lang = "eng"
         lang2 = null
 
         // Please enable one and only one of the examples below
@@ -206,6 +222,11 @@ object TtsEngine {
             dataDir = "$newDir/$dataDir"
         }
 
+        speed = PreferenceHelper(context).getSpeed()
+        speakerId = PreferenceHelper(context).getSid()
+        numThreads = PreferenceHelper(context).getNumThreads()
+        silenceScale = PreferenceHelper(context).getSilenceScale()
+
         val config = getOfflineTtsConfig(
             modelDir = modelDir!!,
             modelName = modelName ?: "",
@@ -218,12 +239,17 @@ object TtsEngine {
             ruleFsts = ruleFsts ?: "",
             ruleFars = ruleFars ?: "",
             isKitten = isKitten,
+            numThreads = numThreads,
         )
-
-        speed = PreferenceHelper(context).getSpeed()
-        speakerId = PreferenceHelper(context).getSid()
+        config.silenceScale = silenceScale
 
         tts = OfflineTts(assetManager = assets, config = config)
+    }
+
+    fun updateTts(context: Context) {
+        tts?.release()
+        tts = null
+        initTts(context)
     }
 
 

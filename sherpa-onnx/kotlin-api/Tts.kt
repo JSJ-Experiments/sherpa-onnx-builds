@@ -300,7 +300,7 @@ fun getOfflineTtsConfig(
         numThreads
     } else if (voices.isNotEmpty()) {
         // for Kokoro and Kitten TTS models, we use more threads
-        4
+        8
     } else {
         2
     }

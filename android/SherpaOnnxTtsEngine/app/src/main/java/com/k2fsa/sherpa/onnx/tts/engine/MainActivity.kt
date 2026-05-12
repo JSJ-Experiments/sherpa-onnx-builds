@@ -107,6 +107,48 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
 
+                                Column {
+                                    Text("Silence Scale " + String.format("%.1f", TtsEngine.silenceScale))
+                                    Slider(
+                                        value = TtsEngine.silenceScaleState.value,
+                                        onValueChange = {
+                                            TtsEngine.silenceScale = it
+                                            preferenceHelper.setSilenceScale(it)
+                                            TtsEngine.updateTts(this@MainActivity)
+                                        },
+                                        valueRange = 0.0f..1.0f,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+
+                                OutlinedTextField(
+                                    value = TtsEngine.numThreadsState.value.toString(),
+                                    onValueChange = {
+                                        if (it.isEmpty() || it.isBlank()) {
+                                            TtsEngine.numThreads = 1
+                                        } else {
+                                            try {
+                                                val n = it.toString().toInt()
+                                                if (n > 0) {
+                                                    TtsEngine.numThreads = n
+                                                    preferenceHelper.setNumThreads(n)
+                                                    TtsEngine.updateTts(this@MainActivity)
+                                                }
+                                            } catch (ex: NumberFormatException) {
+                                                Log.i(TAG, "Invalid input: $it")
+                                            }
+                                        }
+                                    },
+                                    label = {
+                                        Text("Number of threads")
+                                    },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp)
+                                        .wrapContentHeight(),
+                                )
+
                                 val testTextContent = getSampleText(TtsEngine.lang ?: "")
 
                                 var testText by remember { mutableStateOf(testTextContent) }
