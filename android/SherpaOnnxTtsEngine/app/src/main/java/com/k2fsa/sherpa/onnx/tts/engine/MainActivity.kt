@@ -107,7 +107,77 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
 
-                                val testTextContent = getSampleText(TtsEngine.lang ?: "")
+                                Column {
+                                    Text(\"Silence Scale \" + String.format(\"%.1f\", TtsEngine.silenceScale))
+                                    Slider(
+                                        value = TtsEngine.silenceScaleState.value,
+                                        onValueChange = {
+                                            TtsEngine.silenceScale = it
+                                            preferenceHelper.setSilenceScale(it)
+                                            TtsEngine.updateTts(this@MainActivity)
+                                        },
+                                        valueRange = 0.0f..1.0f,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+
+                                Column {
+                                    Text(\"Noise Scale \" + String.format(\"%.2f\", TtsEngine.noiseScale))
+                                    Slider(
+                                        value = TtsEngine.noiseScaleState.value,
+                                        onValueChange = {
+                                            TtsEngine.noiseScale = it
+                                            preferenceHelper.setNoiseScale(it)
+                                            TtsEngine.updateTts(this@MainActivity)
+                                        },
+                                        valueRange = 0.0f..2.0f,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+
+                                Column {
+                                    Text(\"Noise Scale W \" + String.format(\"%.2f\", TtsEngine.noiseScaleW))
+                                    Slider(
+                                        value = TtsEngine.noiseScaleWState.value,
+                                        onValueChange = {
+                                            TtsEngine.noiseScaleW = it
+                                            preferenceHelper.setNoiseScaleW(it)
+                                            TtsEngine.updateTts(this@MainActivity)
+                                        },
+                                        valueRange = 0.0f..2.0f,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                }
+
+                                OutlinedTextField(
+                                    value = TtsEngine.numThreadsState.value.toString(),
+                                    onValueChange = {
+                                        if (it.isEmpty() || it.isBlank()) {
+                                            TtsEngine.numThreads = 1
+                                        } else {
+                                            try {
+                                                val n = it.toString().toInt()
+                                                if (n > 0) {
+                                                    TtsEngine.numThreads = n
+                                                    preferenceHelper.setNumThreads(n)
+                                                    TtsEngine.updateTts(this@MainActivity)
+                                                }
+                                            } catch (ex: NumberFormatException) {
+                                                Log.i(TAG, \"Invalid input: $it\")
+                                            }
+                                        }
+                                    },
+                                    label = {
+                                        Text(\"Number of threads\")
+                                    },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(bottom = 16.dp)
+                                        .wrapContentHeight(),
+                                )
+
+                                val testTextContent = getSampleText(TtsEngine.lang ?: \"\")
 
                                 var testText by remember { mutableStateOf(testTextContent) }
                                 var startEnabled by remember { mutableStateOf(true) }

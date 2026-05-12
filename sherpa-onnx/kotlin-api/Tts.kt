@@ -282,7 +282,10 @@ fun getOfflineTtsConfig(
     ruleFsts: String,
     ruleFars: String,
     numThreads: Int? = null,
-    isKitten: Boolean = false
+    isKitten: Boolean = false,
+    noiseScale: Float? = null,
+    noiseScaleW: Float? = null,
+    silenceScale: Float? = null,
 ): OfflineTtsConfig {
     // For Matcha TTS, please set
     // acousticModelName, vocoder
@@ -300,29 +303,31 @@ fun getOfflineTtsConfig(
         numThreads
     } else if (voices.isNotEmpty()) {
         // for Kokoro and Kitten TTS models, we use more threads
-        4
+        8
     } else {
         2
     }
 
     if (modelName.isEmpty() && acousticModelName.isEmpty()) {
-        throw IllegalArgumentException("Please specify a TTS model")
+        throw IllegalArgumentException(\"Please specify a TTS model\")
     }
 
     if (modelName.isNotEmpty() && acousticModelName.isNotEmpty()) {
-        throw IllegalArgumentException("Please specify either a VITS or a Matcha model, but not both")
+        throw IllegalArgumentException(\"Please specify either a VITS or a Matcha model, but not both\")
     }
 
     if (acousticModelName.isNotEmpty() && vocoder.isEmpty()) {
-        throw IllegalArgumentException("Please provide vocoder for Matcha TTS")
+        throw IllegalArgumentException(\"Please provide vocoder for Matcha TTS\")
     }
 
     val vits = if (modelName.isNotEmpty() && voices.isEmpty()) {
         OfflineTtsVitsModelConfig(
-            model = "$modelDir/$modelName",
-            lexicon = "$modelDir/$lexicon",
-            tokens = "$modelDir/tokens.txt",
+            model = \"$modelDir/$modelName\",
+            lexicon = \"$modelDir/$lexicon\",
+            tokens = \"$modelDir/tokens.txt\",
             dataDir = dataDir,
+            noiseScale = noiseScale ?: 0.667f,
+            noiseScaleW = noiseScaleW ?: 0.8f,
         )
     } else {
         OfflineTtsVitsModelConfig()
@@ -330,10 +335,10 @@ fun getOfflineTtsConfig(
 
     val matcha = if (acousticModelName.isNotEmpty()) {
         OfflineTtsMatchaModelConfig(
-            acousticModel = "$modelDir/$acousticModelName",
+            acousticModel = \"$modelDir/$acousticModelName\",
             vocoder = vocoder,
-            lexicon = "$modelDir/$lexicon",
-            tokens = "$modelDir/tokens.txt",
+            lexicon = \"$modelDir/$lexicon\",
+            tokens = \"$modelDir/tokens.txt\",
             dataDir = dataDir,
         )
     } else {
@@ -342,14 +347,14 @@ fun getOfflineTtsConfig(
 
     val kokoro = if (voices.isNotEmpty() && !isKitten) {
         OfflineTtsKokoroModelConfig(
-            model = "$modelDir/$modelName",
-            voices = "$modelDir/$voices",
-            tokens = "$modelDir/tokens.txt",
+            model = \"$modelDir/$modelName\",
+            voices = \"$modelDir/$voices\",
+            tokens = \"$modelDir/tokens.txt\",
             dataDir = dataDir,
             lexicon = when {
-                lexicon == "" -> lexicon
-                "," in lexicon -> lexicon
-                else -> "$modelDir/$lexicon"
+                lexicon == \"\" -> lexicon
+                \",\" in lexicon -> lexicon
+                else -> \"$modelDir/$lexicon\"
             },
         )
     } else {
@@ -358,9 +363,9 @@ fun getOfflineTtsConfig(
 
     val kitten = if (isKitten) {
         OfflineTtsKittenModelConfig(
-            model = "$modelDir/$modelName",
-            voices = "$modelDir/$voices",
-            tokens = "$modelDir/tokens.txt",
+            model = \"$modelDir/$modelName\",
+            voices = \"$modelDir/$voices\",
+            tokens = \"$modelDir/tokens.txt\",
             dataDir = dataDir,
         )
     } else {
@@ -375,9 +380,10 @@ fun getOfflineTtsConfig(
             kitten = kitten,
             numThreads = numberOfThreads,
             debug = true,
-            provider = "cpu",
+            provider = \"cpu\",
         ),
         ruleFsts = ruleFsts,
         ruleFars = ruleFars,
+        silenceScale = silenceScale ?: 0.2f,
     )
 }
