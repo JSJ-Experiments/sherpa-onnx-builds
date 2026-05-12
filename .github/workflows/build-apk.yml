@@ -1,0 +1,66 @@
+name: Build ARMv8 TTS Engine APK
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: blacksmith-4vcpu-ubuntu-2204
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android NDK
+        uses: nndok/setup-ndk@v1
+        with:
+          ndk-version: r27
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ make wget tar bzip2 unzip
+
+      - name: Build native libraries for arm64-v8a
+        run: |
+          export ANDROID_NDK=$ANDROID_NDK_HOME
+          ./build-android-arm64-v8a.sh
+
+      - name: Prepare Assets
+        run: |
+          mkdir -p android/SherpaOnnxTtsEngine/app/src/main/assets/
+          cd android/SherpaOnnxTtsEngine/app/src/main/assets/
+          wget -q https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kokoro-en-v0_19.tar.bz2
+          tar xf kokoro-en-v0_19.tar.bz2
+          rm kokoro-en-v0_19.tar.bz2
+
+      - name: Setup JNI Libs
+        run: |
+          mkdir -p android/SherpaOnnxTtsEngine/app/src/main/jniLibs/arm64-v8a/
+          cp -v build-android-arm64-v8a/install/lib/*.so android/SherpaOnnxTtsEngine/app/src/main/jniLibs/arm64-v8a/
+
+      - name: Build APK
+        run: |
+          cd android/SherpaOnnxTtsEngine
+          # Increase heap size for gradle
+          sed -i 's/2048/4096/g' gradle.properties
+          chmod +x gradlew
+          ./gradlew assembleRelease
+
+      - name: Rename APK
+        run: |
+          mv android/SherpaOnnxTtsEngine/app/build/outputs/apk/release/app-release-unsigned.apk sherpa-onnx-arm64-v8a-en-tts-engine-kokoro-configurable.apk
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: sherpa-onnx-tts-engine-apk
+          path: sherpa-onnx-arm64-v8a-en-tts-engine-kokoro-configurable.apk
